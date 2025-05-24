@@ -1,0 +1,54 @@
+// context/AuthContext.tsx
+import { createContext, useEffect, useState, ReactNode } from 'react';
+import { useRouter } from 'next/router';
+
+interface User {
+  _id: string;
+  name: string;
+  email: string;
+}
+
+interface AuthContextType {
+  user: User | null;
+  login: (token: string, user: User) => void;
+  logout: () => void;
+}
+
+export const AuthContext = createContext<AuthContextType>({
+  user: null,
+  login: () => {},
+  logout: () => {},
+});
+
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const [user, setUser] = useState<User | null>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const userData = localStorage.getItem('user');
+    if (token && userData) {
+      setUser(JSON.parse(userData));
+    }
+  }, []);
+
+  const login = (token: string, user: User) => {
+    localStorage.setItem('token', token);
+    localStorage.setItem('user', JSON.stringify(user));
+    setUser(user);
+    router.push('/profile');
+  };
+
+  const logout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setUser(null);
+    router.push('/login');
+  };
+
+  return (
+    <AuthContext.Provider value={{ user, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
+}
