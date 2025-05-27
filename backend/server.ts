@@ -3,10 +3,11 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
 
-import authRoutes from '.auth.routes';
-import profileRoutes from './routes/profile.routes';
-import friendRoutes from './routes/friends.routes';
-import messageRoutes from './routes/messages.routes';
+import authRoutes from './routes/auth.routes.js';
+import profileRoutes from './routes/profile.routes.js';
+import friendRoutes from './routes/friends.routes.js';
+import messageRoutes from './routes/messages.routes.js';
+
 
 dotenv.config();
 

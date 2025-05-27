@@ -1,27 +1,44 @@
-// controllers/messageController.js
-const Message = require('../models/Message');
+import { Request, Response } from "express";
+import Message from "../models/Message.js";
+import { IUser } from "../models/User.js";
 
-exports.sendMessage = async (req, res) => {
+export const sendMessage = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
+    const senderId = (req.user as IUser)._id;
     const { recipientId, content } = req.body;
-    const message = await Message.create({ sender: req.user, recipient: recipientId, content });
+
+    const message = await Message.create({
+      sender: senderId,
+      recipient: recipientId,
+      content,
+    });
+
     res.status(201).json(message);
   } catch (err) {
-    res.status(500).json({ msg: 'Failed to send message', err });
+    res.status(500).json({ msg: "Failed to send message", err });
   }
 };
 
-exports.getMessages = async (req, res) => {
+export const getMessagesWithFriend = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
-    const { userId } = req.params;
+    const senderId = (req.user as IUser)._id;
+    const { friendId } = req.params;
+
     const messages = await Message.find({
       $or: [
-        { sender: req.user, recipient: userId },
-        { sender: userId, recipient: req.user }
-      ]
+        { sender: senderId, recipient: friendId },
+        { sender: friendId, recipient: senderId },
+      ],
     }).sort({ createdAt: 1 });
+
     res.json(messages);
   } catch (err) {
-    res.status(500).json({ msg: 'Failed to load messages', err });
+    res.status(500).json({ msg: "Failed to load messages", err });
   }
 };

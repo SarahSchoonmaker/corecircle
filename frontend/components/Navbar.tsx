@@ -1,29 +1,36 @@
 // components/Navbar.tsx
-import Link from 'next/link';
-import { useContext } from 'react';
-import { AuthContext } from '../context/AuthContext';
+"use client";
+import Link from "next/link";
+import { useContext } from "react";
+import { AuthContext } from "@/context/AuthContext";
 
 export default function Navbar() {
   const { user, logout } = useContext(AuthContext);
 
   return (
-    <nav className="flex justify-between items-center p-4 bg-gray-100">
-      <Link href="/">
-        <span className="text-xl font-bold">CoreCircle</span>
+    <header className="bg-white shadow-md dark:bg-zinc-900 px-6 py-4 flex justify-between items-center">
+      <Link href="/" className="text-2xl font-bold text-blue-600">
+        CoreCircle
       </Link>
-      <div className="flex gap-4">
+      <nav className="space-x-4">
         {user ? (
           <>
             <Link href="/profile">Profile</Link>
-            <button onClick={logout} className="text-red-500">Logout</button>
+            <button onClick={logout} className="text-red-500">
+              Logout
+            </button>
           </>
         ) : (
           <>
-            <Link href="/login">Login</Link>
-            <Link href="/register">Register</Link>
+            <Link href="/login" className="text-blue-600">
+              Login
+            </Link>
+            <Link href="/register" className="text-blue-600">
+              Register
+            </Link>
           </>
         )}
-      </div>
-    </nav>
+      </nav>
+    </header>
   );
 }
